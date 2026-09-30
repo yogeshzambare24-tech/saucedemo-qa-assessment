@@ -1,0 +1,414 @@
+Task A- Exploratory Testing Notes
+
+Observation 1 – Login
+
+Area: Login
+
+Action: Attempted to log in using valid and invalid credentials on the login page.
+
+Expected:
+
+With valid credentials, the user should successfully log in to the inventory page.
+
+With invalid credentials, an appropriate error message should be displayed.
+
+Actual: User is not able to login without correct credentials and appropriate error message displayed for invalid/ empty field.
+Potential Risk: No significant risk observed
+
+Result: No Defect
+
+
+
+
+Observation 2 – Product Sorting
+
+Area: Product Sorting
+
+Action: Tested the Name A-Z, Name Z-A, Price Low-High, and Price High-Low options.
+
+Expected: Products should be displayed in the correct order according to the selected sorting option.
+
+Actual: Products were displayed in the correct order according to the selected sorting option.
+
+
+Potential Risk: No significant risk observed
+
+Result: No Defect
+
+
+
+
+
+Observation 3 – Cart
+
+Area: Shopping Cart
+
+Action: Added a product, opened the cart, added a second product, and checked the cart again.
+
+Expected:
+
+Added products should appear in the cart with the correct name, price, and cart count.
+
+Actual: Added products appeared in the cart with the correct name, price, and updated cart count.
+
+
+Potential Risk: No significant risk observed
+
+Result: No Defect
+
+
+
+
+
+Observation 4 – Checkout
+
+Area: Checkout
+
+Action: Clicked Continue while leaving the required fields blank during checkout.
+
+Expected: A clear validation message should appear if any required field is missing.
+
+Actual:A clear validation message appeared indicating that the required fields were missing.
+
+
+Potential Risk: No significant risk observed
+
+
+Result: No Defect
+
+
+
+
+
+Observation 5 – Checkout Defect: Zero Item Checkout
+
+Area: Checkout
+
+Action:
+
+Attempted to proceed with and complete the checkout process with zero items in the cart.
+
+Expected:
+
+The system should restrict checkout when the cart is empty and display an appropriate warning message.
+
+Actual:
+
+The user was able to successfully proceed and complete the checkout even with zero items in the cart.
+
+Potential Risk:
+
+Allows invalid orders to be placed, leading to incorrect inventory tracking, database pollution, and financial discrepancies.
+
+Result:Defect
+
+
+
+
+Observation 6 – Checkout Defect: Invalid Input in Postal Code
+
+Area: Checkout Information
+
+Action:
+
+Entered text characters/ special char instead of numerical values into the Zip/Postal Code and first name/Last Name fields during checkout.
+
+Expected:
+
+The Zip/Postal Code field should accept only valid numeric characters or restrict invalid text inputs. In Name fields should not allow special char.
+
+Actual:
+
+The system accepted alphabetic text/special char characters in the Zip/Postal Code/name field without showing any validation error.
+
+Potential Risk:
+
+May cause data integrity issues, export errors for shipping providers, or potential backend handling vulnerabilities.
+
+Result: Validation Concern
+
+
+
+Observation 7 – Product Detail Defect: Missing Quantity Control
+
+Area: Product Details / Shopping Cart
+
+Action:
+
+Navigated to a product page to increase the item quantity before adding it to the cart.
+
+Expected:
+
+A quantity increment button or input field should be available to adjust the number of items.
+
+Actual:
+
+The user was not able to increase the product quantity because the increment button/feature was missing from the interface.
+
+Potential Risk:
+
+Limits user flexibility, forcing users to add single items repeatedly, which degrades the overall user experience.
+
+Result: UX / Functional Limitation
+
+
+
+
+Observation 8 – Order Completion
+
+Area: Checkout / Order Completion
+
+Action:
+
+Completed the checkout by providing valid customer information.
+
+Expected:
+
+The order should be completed successfully, and a confirmation message should be displayed.
+
+Actual:
+
+The order was completed successfully, and a confirmation message was displayed.
+
+Potential Risk: No risk
+
+Result: No Defect
+
+===============================================================================
+
+Task B – Defect Discovery & Reporting
+DEF-01 – Checkout fields accept non-standard input without field-level validation
+
+Area: Checkout Information
+
+Severity: Medium
+Priority: P2
+Status: Validation Concern
+
+Steps to Reproduce
+Open SauceDemo.
+Login using the standard_user account.
+Add any product to the cart.
+Navigate to Checkout.
+Enter alphabetic/special-character values in the Zip/Postal Code field.
+Enter special-character values in the First Name and Last Name fields.
+Click Continue.
+Expected Result:
+
+The checkout form should validate input according to the expected data format for each field. Invalid values should be rejected or an appropriate validation message should be displayed.
+
+Actual Result:
+
+The application accepts alphabetic/special-character input in the Zip/Postal Code and name fields without displaying a field-level validation error.
+
+User / Business Impact:
+
+Weak input validation can allow unexpected data to enter the checkout flow and may create data-quality or downstream integration risks if these values are consumed by other systems.
+
+Evidence:
+
+evidence/defect-01.png
+
+
+
+
+DEF-02 – No quantity adjustment control on product/cart flow
+
+Area: Product Details / Shopping Cart
+
+Severity: Low
+Priority: P3
+Status: UX / Functional Limitation
+
+Steps to Reproduce
+Open SauceDemo.
+Login using the standard_user account.
+Open a product or add a product to the cart.
+Attempt to increase the quantity of the product using a quantity control.
+Observe the available controls.
+Expected Result:
+
+If quantity adjustment is part of the intended shopping-cart requirements, the user should have a quantity control or another supported mechanism to increase the quantity of an existing cart item.
+
+Actual Result:
+
+No quantity increment control or quantity input is available. To increase the quantity, the user would need to add the same product again.
+
+User / Business Impact:
+
+The absence of a direct quantity control makes quantity management less convenient and can increase the number of user actions required when purchasing multiple units.
+
+Evidence:
+
+evidence/defect-02.png
+
+
+DEF-03 – Checkout can be completed with an empty cart
+
+Area: Shopping Cart / Checkout
+
+Severity: Medium
+Priority: P2
+Status: Confirmed Behavior / Functional Concern
+
+Steps to Reproduce
+
+1. Open SauceDemo.
+2. Login using the `standard_user` account.
+3. Do not add any product to the cart, or remove all products from the cart.
+4. Navigate to the shopping cart.
+5. Proceed to the checkout flow.
+6. Enter valid customer information.
+7. Continue through the checkout process.
+8. Click **Finish**.
+
+Expected Result
+
+The application should prevent checkout when the cart contains zero items and display an appropriate message indicating that the cart is empty.
+
+Actual Result
+
+The application allows the user to proceed through the checkout flow and complete the order even when the cart contains zero items.
+
+ User / Business Impact
+
+Allowing checkout to complete with an empty cart may result in an invalid order workflow and unexpected business behavior. The application should validate that at least one product exists in the cart before allowing order completion.
+
+Evidence
+
+evidence/defect-03.png
+
+
+
+==============================================================================
+3. Task C – AI-Assisted Automation
+
+## Automation Technology
+
+* **Automation Tool:** Playwright
+* **Language:** TypeScript
+* **Design Pattern:** Page Object Model (POM)
+* **Browsers:** Chromium, Firefox, WebKit
+
+## Automated E2E Flow
+
+The following end-to-end checkout flow was automated:
+
+1. Login using valid credentials.
+2. Verify the inventory page.
+3. Add Sauce Labs Backpack to the cart.
+4. Add Sauce Labs Bike Light to the cart.
+5. Open the shopping cart.
+6. Verify the selected products are present.
+7. Navigate to checkout.
+8. Enter customer information.
+9. Complete the order.
+10. Verify the order confirmation message.
+
+## Test Execution Result
+
+The automated test was executed across three browsers:
+
+| Browser  | Result   |
+| -------- | -------- |
+| Chromium | ✅ Passed |
+| Firefox  | ✅ Passed |
+| WebKit   | ✅ Passed |
+
+**Overall Result: 3/3 browser executions passed.**
+
+## AI Assistance and Validation
+
+Playwright Codegen was used to assist with initial locator discovery and generation of the basic automation flow. The generated script was manually reviewed and improved by removing unnecessary actions, removing the Pause action, using stable data-test selectors, adding meaningful assertions, and organizing the test using the Page Object Model (POM). The final test was validated by running it on Chromium, Firefox, and WebKit, with all 3 executions passing.
+=================================================================================
+ 
+ 
+ 
+4. Task D – AI-Driven QA Approach
+
+## AI Value in QA
+
+AI can improve QA productivity by helping generate test scenarios, identify potential risks and edge cases, create test data, assist with automation scripts, and analyze test results. In this assessment, AI was used for exploratory testing ideas and to assist with the initial Playwright automation flow.
+
+## Mandatory Human Review
+
+AI-generated suggestions should not be accepted without validation. A QA engineer must review the output against requirements and actual application behavior. Potential defects should be reproduced before reporting, and undocumented requirements should not be assumed.
+
+Human review is required for:
+
+* Test-case relevance and coverage
+* Defect validity
+* Expected vs. actual behavior
+* Automation selectors and assertions
+* AI-generated recommendations
+
+## Regression and Coverage Optimization
+
+AI can help identify duplicate test cases, missing scenarios, edge cases, and areas affected by recent changes. Regression testing should be prioritized based on business-critical functionality, changed areas, previous defects, and integration risks.
+
+AI recommendations should be reviewed by QA before adding or removing tests from the regression suite.
+
+## Defect and Test Optimization
+
+AI can assist in analyzing failed test results, logs, screenshots, and similar defects. It can suggest possible root causes and help identify coverage gaps.
+
+However, these suggestions should be treated as hypotheses. The QA engineer must reproduce the issue and verify the evidence before creating or updating a defect.
+
+## CI/CD Quality Gates
+
+Automated smoke and regression tests can be integrated into CI/CD pipelines. Recommended quality gates include:
+
+* Critical smoke tests must pass.
+* Critical/blocker defects should be reviewed before release.
+* Failed automation tests must be investigated.
+* Test reports should be available for review.
+* Tests should not be marked as passed without valid execution evidence.
+
+## AI Risks and Mitigation
+
+| Risk                             | Mitigation                                     |
+| -------------------------------- | ---------------------------------------------- |
+| Incorrect AI-generated scenarios | Validate against requirements                  |
+| False-positive defects           | Reproduce and verify before reporting          |
+| Missing test coverage            | Combine AI suggestions with risk-based testing |
+| Poor automation code             | Manual code review and execution               |
+| Sensitive data exposure          | Avoid sharing confidential production data     |
+| Over-reliance on AI              | Keep final QA decisions with human testers     |
+
+## Conclusion
+
+AI can improve QA speed, coverage, and productivity, but it should support rather than replace QA engineering judgment. Human validation remains essential for test coverage, defect confirmation, automation quality, and release decisions.
+
+==============================================================================
+5. Task E – Tool used
+- Playwright
+- TypeScript
+- Node.js / npm
+- Visual Studio Code
+- Git / GitHub
+- Playwright Codegen
+- ChatGPT – AI-assisted test design and automation assistance
+- SauceDemo application
+
+===================================================================================
+6. Task F- Automation Setup / Run Instructions
+
+
+Prerequisites:
+- Node.js installed
+- npm installed
+
+Install dependencies:
+npm install
+
+Install Playwright browsers:
+npx playwright install
+
+Run all tests:
+npx playwright test
+
+Run checkout test:
+npx playwright test tests/checkout.spec.ts --reporter=list
+
+Run on a specific browser:
+npx playwright test tests/checkout.spec.ts --project=chromium
